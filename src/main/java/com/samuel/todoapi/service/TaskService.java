@@ -27,8 +27,17 @@ public class TaskService {
     }
 
     public Task createTask(Task task) {
-        repository.save(task);
-        return task;
+        return repository.save(task);
+    }
+
+    public Task updateTask(Integer id, Task taskDetails) {
+        Task task = getTaskById(id);
+
+        task.setTitle(taskDetails.getTitle());
+        task.setDescription(taskDetails.getDescription());
+        task.setCompleted(taskDetails.isCompleted());
+
+        return repository.save(task);
     }
 
     public void deleteTask(Integer id) {

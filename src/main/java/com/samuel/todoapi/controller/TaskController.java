@@ -2,14 +2,15 @@ package com.samuel.todoapi.controller;
 
 import com.samuel.todoapi.entity.Task;
 import com.samuel.todoapi.service.TaskService;
-
-import java.util.List;
-
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
+@RequestMapping("/tasks")
 public class TaskController {
 
     private final TaskService service;
@@ -18,28 +19,33 @@ public class TaskController {
         this.service = service;
     }
 
-    @GetMapping("/tasks")
+    @GetMapping
     public ResponseEntity<List<Task>> getAllTasks() {
         List<Task> tasksList = service.getAllTasks();
-        return ResponseEntity.status(HttpStatus.OK).body(tasksList);
+        return ResponseEntity.ok(tasksList);
     }
 
-    @GetMapping("/tasks/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable(value = "id") Integer id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> getTaskById(@PathVariable Integer id) {
         Task task = service.getTaskById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(task);
+        return ResponseEntity.ok(task);
     }
 
-    @PostMapping("/tasks")
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+    @PostMapping
+    public ResponseEntity<Task> createTask(@RequestBody @Valid Task task) {
         Task createdTask = service.createTask(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
 
-    @DeleteMapping("/tasks/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable(value = "id") Integer id) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Task> updateTask(@PathVariable Integer id, @RequestBody @Valid Task task) {
+        Task updatedTask = service.updateTask(id, task);
+        return ResponseEntity.ok(updatedTask);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Integer id) {
         service.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
-
 }
